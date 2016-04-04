@@ -1,5 +1,5 @@
 /*!
- @file RadUUID.m
+ @file NuUUID.m
  @copyright Copyright (c) 2013 Radtastical, Inc.
  
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,12 +15,12 @@
  limitations under the License.
  */
 
-#import "RadUUID.h"
+#import "NuUUID.h"
 #include "uuid/uuid.h"
 
-@implementation RadUUID 
+@implementation NuUUID 
 
-- (RadUUID *) init {
+- (NuUUID *) init {
    if (self = [super init]) {
        uuid_generate(uu);
    }

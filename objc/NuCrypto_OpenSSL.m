@@ -1,5 +1,5 @@
 /*!
- @file RadCrypto_OpenSSL.m
+ @file NuCrypto_OpenSSL.m
  @copyright Copyright (c) 2013 Radtastical, Inc.
  
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +14,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-#ifdef RadCrypto_OpenSSL
+#ifdef NuCrypto_OpenSSL
 
-#import "RadCrypto.h"
+#import "NuCrypto.h"
 
 #include <openssl/md5.h>
 #include <openssl/sha.h>
@@ -24,7 +24,7 @@
 #include <openssl/evp.h>
 #include <openssl/aes.h>
 
-@implementation NSData (RadCrypto)
+@implementation NSData (NuCrypto)
 
 - (NSData *) md5Data 
 {

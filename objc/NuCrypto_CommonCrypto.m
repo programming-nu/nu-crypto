@@ -1,5 +1,5 @@
 /*!
- @file RadCrypto_CommonCrypto.m
+ @file NuCrypto_CommonCrypto.m
  @copyright Copyright (c) 2013 Radtastical, Inc.
  
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +14,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-#ifdef RadCrypto_CommonCrypto
+#ifdef NuCrypto_CommonCrypto
 
-#import "RadCrypto.h"
+#import "NuCrypto.h"
 
 #import <CommonCrypto/CommonHMAC.h>
 #import <CommonCrypto/CommonDigest.h>
@@ -24,7 +24,7 @@
 #import <CommonCrypto/CommonKeyDerivation.h>
 #import <Security/Security.h>
 
-@implementation NSData (RadCommonCrypto)
+@implementation NSData (NuCommonCrypto)
 
 - (NSData *) md5Data
 {
@@ -172,7 +172,7 @@ const NSUInteger kPBKDFRounds = 10000;  // ~80ms on an iPhone 4
 
 #if TARGET_OS_IPHONE
 
-@interface RadPublicRSAKey : NSObject
+@interface NuPublicRSAKey : NSObject
 {
     SecKeyRef publicKey;
     BOOL valid;
@@ -183,7 +183,7 @@ const NSUInteger kPBKDFRounds = 10000;  // ~80ms on an iPhone 4
 - (NSData *) encryptData:(NSData *) data;
 @end
 
-@interface RadPrivateRSAKey : NSObject 
+@interface NuPrivateRSAKey : NSObject 
 {
     NSString *name;
     NSData *publicTag;
@@ -203,11 +203,11 @@ const NSUInteger kPBKDFRounds = 10000;  // ~80ms on an iPhone 4
 @end
 
 
-@interface RadPrivateRSAKey (Private)
+@interface NuPrivateRSAKey (Private)
 - (BOOL) generateKeyPair:(NSUInteger)keySize;
 @end
 
-@implementation RadPrivateRSAKey 
+@implementation NuPrivateRSAKey 
 @synthesize valid;
 
 - (id) initWithName:(id) n {
@@ -360,7 +360,7 @@ const NSUInteger kPBKDFRounds = 10000;  // ~80ms on an iPhone 4
 
 @end
 
-@implementation RadPublicRSAKey 
+@implementation NuPublicRSAKey 
 @synthesize valid;
 
 

@@ -1,5 +1,5 @@
 /*!
- @file RadUUID.h
+ @file NuUUID.h
  @copyright Copyright (c) 2013 Radtastical, Inc.
  
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
 #import <Foundation/Foundation.h>
 #include "uuid/uuid.h"
 
-@interface RadUUID : NSObject
+@interface NuUUID : NSObject
 {
    uuid_t uu;
 }

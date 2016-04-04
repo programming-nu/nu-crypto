@@ -1,5 +1,5 @@
 /*!
- @file RadSSL.h
+ @file NuSSL.h
  @copyright Copyright (c) 2013 Radtastical, Inc.
  
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +14,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+
+#ifdef NuCrypto_OpenSSL
 
 // WARNING - EVERYTHING IN THIS FILE IS EXPERIMENTAL JUNK AND SUBJECT TO CHANGE
 
@@ -32,13 +34,13 @@
 #include <openssl/pem.h>
 
 
-#import "RadSSL.h"
-#import "RadBinaryEncoding.h"
+#import "NuSSL.h"
+#import "NuBinaryEncoding.h"
 
 // Apple is deprecating OpenSSL, but it's not clear what the replacement should be
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
-@implementation NSData (RadSSL)
+@implementation NSData (NuSSL)
 
 + (NSData *) dataWithBIO:(BIO *) bio
 {
@@ -54,7 +56,7 @@
 @end
 
 
-@interface RadSSL ()
+@interface NuSSL ()
 {
     SSL *ssl;
     SSL_CTX *ssl_ctx;
@@ -62,7 +64,7 @@
 
 @end
 
-@implementation RadSSL
+@implementation NuSSL
 
 #define DEVICE_BINARY_SIZE 32
 #define MAXPAYLOAD_SIZE 1000
@@ -308,7 +310,7 @@
 
 @end
 
-@implementation RadRSAKey
+@implementation NuRSAKey
 
 - (id) initWithPrivateKeyData:(NSData *) key_data
 {
@@ -345,9 +347,9 @@
 
 @end
 
-@implementation RadEVPPKey
+@implementation NuEVPPKey
 
-- (id) initWithRSAKey:(RadRSAKey *) rsaKey
+- (id) initWithRSAKey:(NuRSAKey *) rsaKey
 {
     if (self = [super init]) {
         pkey = EVP_PKEY_new();
@@ -357,7 +359,7 @@
 }
 @end
 
-@implementation RadX509Request
+@implementation NuX509Request
 
 - (id) init {
     if (self = [super init]) {
@@ -369,7 +371,7 @@
 
 @end
 
-@implementation RadX509Certificate
+@implementation NuX509Certificate
 
 - (id) initWithData:(NSData *) cert_data
 {
@@ -454,7 +456,7 @@ int nid_recipientNonce;
 int nid_transId;
 int nid_extensionReq;
 
-@implementation RadPKCS7Message
+@implementation NuPKCS7Message
 
 + (void) initialize
 {
@@ -499,8 +501,8 @@ int add_attribute_octet(STACK_OF(X509_ATTRIBUTE) *attrs, int nid, char *buffer,
     return (0);
 }
 
-+ (RadPKCS7Message *) signedMessageWithCertificate:(RadX509Certificate *) certificate
-                                        privateKey:(RadEVPPKey *) key
++ (NuPKCS7Message *) signedMessageWithCertificate:(NuX509Certificate *) certificate
+                                        privateKey:(NuEVPPKey *) key
                                               data:(NSData *) dataToSign
                                   signedAttributes:(NSDictionary *) signedAttributes
 {
@@ -562,12 +564,12 @@ int add_attribute_octet(STACK_OF(X509_ATTRIBUTE) *attrs, int nid, char *buffer,
     }
     BIO_free(pkcs7bio);
 
-    return [[RadPKCS7Message alloc] initWithPKCS7:p7];
+    return [[NuPKCS7Message alloc] initWithPKCS7:p7];
 }
 
 
-+ (RadPKCS7Message *) signedMessageWithCertificate:(RadX509Certificate *) certificate
-                                        privateKey:(RadEVPPKey *) key
++ (NuPKCS7Message *) signedMessageWithCertificate:(NuX509Certificate *) certificate
+                                        privateKey:(NuEVPPKey *) key
                                               data:(NSData *) dataToSign
 {
     BIO *bio = BIO_new(BIO_s_mem());
@@ -579,20 +581,20 @@ int add_attribute_octet(STACK_OF(X509_ATTRIBUTE) *attrs, int nid, char *buffer,
     
     STACK_OF(X509) *chain = sk_X509_new_null();
     PKCS7* p7 = PKCS7_sign(certificate->cert, key->pkey, chain, bio, 0);
-    return [[RadPKCS7Message alloc] initWithPKCS7:p7];
+    return [[NuPKCS7Message alloc] initWithPKCS7:p7];
 }
 
 
 
-+ (RadPKCS7Message *) degenerateWrapperForCertificate:(RadX509Certificate *) certificate
++ (NuPKCS7Message *) degenerateWrapperForCertificate:(NuX509Certificate *) certificate
 {
     PKCS7 *p7 = PKCS7_new();
     PKCS7_set_type(p7, NID_pkcs7_signed);
     PKCS7_add_certificate(p7, certificate->cert);
-    return [[RadPKCS7Message alloc] initWithPKCS7:p7];
+    return [[NuPKCS7Message alloc] initWithPKCS7:p7];
 }
 
-+ (RadPKCS7Message *) encryptedMessageWithCertificates:(NSArray *) certificates
++ (NuPKCS7Message *) encryptedMessageWithCertificates:(NSArray *) certificates
                                                   data:(NSData *) dataToEncrypt {
     BIO *bio = BIO_new(BIO_s_mem());
     BIO_reset(bio);
@@ -602,11 +604,11 @@ int add_attribute_octet(STACK_OF(X509_ATTRIBUTE) *attrs, int nid, char *buffer,
         NSLog(@"error feeding buffer");
     const EVP_CIPHER *cipher = EVP_des_ede3_cbc();
     STACK_OF(X509) *certs = sk_X509_new_null();
-    for (RadX509Certificate *certificate in certificates) {
+    for (NuX509Certificate *certificate in certificates) {
         sk_X509_push(certs, certificate->cert);
     }
     PKCS7 *p7 = PKCS7_encrypt(certs, bio, cipher, PKCS7_BINARY);
-    return [[RadPKCS7Message alloc] initWithPKCS7:p7];
+    return [[NuPKCS7Message alloc] initWithPKCS7:p7];
 }
 
 - (id) initWithData:(NSData *) data
@@ -653,8 +655,8 @@ int add_attribute_octet(STACK_OF(X509_ATTRIBUTE) *attrs, int nid, char *buffer,
  PKCS7 *PKCS7_encrypt(STACK_OF(X509) *certs, BIO *in, const EVP_CIPHER *cipher, int flags);
  */
 
-- (NSData *) decryptWithKey:(RadEVPPKey *) key
-                certificate:(RadX509Certificate *) certificate
+- (NSData *) decryptWithKey:(NuEVPPKey *) key
+                certificate:(NuX509Certificate *) certificate
 {
     //    if (!PKCS7_type_is_encrypted(self->p7)) {
     //        NSLog(@"pkcs7 is not encrypted");
@@ -765,7 +767,7 @@ X509 *My_PKCS7_cert_from_signer_info(PKCS7 *p7, PKCS7_SIGNER_INFO *si)
     }
 }
 
-- (RadX509Certificate *) signerCertificate {
+- (NuX509Certificate *) signerCertificate {
     if (!PKCS7_type_is_signed(p7)) {
 		NSLog(@"PKCS#7 is not signed!");
 		ERR_print_errors_fp(stderr);
@@ -780,7 +782,7 @@ X509 *My_PKCS7_cert_from_signer_info(PKCS7 *p7, PKCS7_SIGNER_INFO *si)
     X509 *signer_cert = My_PKCS7_cert_from_signer_info(p7, si);
     assert(signer_cert);
     
-    return [[RadX509Certificate alloc] initWithX509:signer_cert];
+    return [[NuX509Certificate alloc] initWithX509:signer_cert];
 }
 
 - (NSDictionary *) attributes {
@@ -843,7 +845,7 @@ X509 *My_PKCS7_cert_from_signer_info(PKCS7 *p7, PKCS7_SIGNER_INFO *si)
 }
 
 
-- (NSData *) verifyWithCertificate:(RadX509Certificate *) certificate
+- (NSData *) verifyWithCertificate:(NuX509Certificate *) certificate
 {
     // Make sure this is a signed PKCS#7
     if (!PKCS7_type_is_signed(p7)) {
@@ -887,7 +889,7 @@ X509 *My_PKCS7_cert_from_signer_info(PKCS7 *p7, PKCS7_SIGNER_INFO *si)
 }
 @end
 
-@implementation RadCertificateAuthority
+@implementation NuCertificateAuthority
 void
 handle_error (const char *file, int lineno, const char *msg)
 {
@@ -917,9 +919,9 @@ struct entry ext_ent[EXT_COUNT] = {
     {"keyUsage", "nonRepudiation,digitalSignature,keyEncipherment"}
 };
 
-- (RadX509Certificate *) generateCertificateForRequest:(NSData *) requestData
-                                     withCACertificate:(RadX509Certificate *) caCertificate
-                                            privateKey:(RadEVPPKey *) caPrivateKey
+- (NuX509Certificate *) generateCertificateForRequest:(NSData *) requestData
+                                     withCACertificate:(NuX509Certificate *) caCertificate
+                                            privateKey:(NuEVPPKey *) caPrivateKey
 {
     int i, subjAltName_pos;
     long serial = 1;
@@ -1028,9 +1030,10 @@ struct entry ext_ent[EXT_COUNT] = {
         int_error ("Error signing certificate");
         return nil;
     }
-    return [[RadX509Certificate alloc] initWithX509:cert];
+    return [[NuX509Certificate alloc] initWithX509:cert];
 }
 
 @end
 
+#endif
 #endif

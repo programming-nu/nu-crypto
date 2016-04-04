@@ -1,5 +1,5 @@
 /*!
- @file RadSSL.h
+ @file NuSSL.h
  @copyright Copyright (c) 2013 Radtastical, Inc.
  
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,13 +14,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+#ifdef NuCrypto_OpenSSL
 
 // WARNING - EVERYTHING IN THIS FILE IS EXPERIMENTAL JUNK AND SUBJECT TO CHANGE
 
 // since this requires OpenSSL, we omit it from iPhone builds
 #if !TARGET_OS_IPHONE
 
-@interface RadSSL : NSObject
+@interface NuSSL : NSObject
 
 - (void) setCAListFileName:(NSString *)CAListFileName;
 - (void) setCAListData:(NSData *) cert_data;
@@ -40,11 +41,11 @@
 
 @end
 
-@interface NSData (RadSSL)
+@interface NSData (NuSSL)
 + (NSData *) dataWithBIO:(BIO *) bio;
 @end
 
-@interface RadRSAKey : NSObject {
+@interface NuRSAKey : NSObject {
 @public
     RSA *rsa;
 }
@@ -53,19 +54,19 @@
 - (int) checkKey;
 @end
 
-@interface RadEVPPKey : NSObject {
+@interface NuEVPPKey : NSObject {
 @public
     EVP_PKEY *pkey;
 }
-- (id) initWithRSAKey:(RadRSAKey *) rsaKey;
+- (id) initWithRSAKey:(NuRSAKey *) rsaKey;
 @end
 
-@interface RadX509Request : NSObject {
+@interface NuX509Request : NSObject {
     X509_REQ *req;
 }
 @end
 
-@interface RadX509Certificate : NSObject {
+@interface NuX509Certificate : NSObject {
 @public
     X509 *cert;
 }
@@ -77,35 +78,36 @@
 - (NSString *) textRepresentation;
 @end
 
-@interface RadPKCS7Message : NSObject {
+@interface NuPKCS7Message : NSObject {
 @public
     PKCS7 *p7;
 }
 
 + (void) initialize;
-+ (RadPKCS7Message *) signedMessageWithCertificate:(RadX509Certificate *) certificate
-                                        privateKey:(RadEVPPKey *) key
++ (NuPKCS7Message *) signedMessageWithCertificate:(NuX509Certificate *) certificate
+                                        privateKey:(NuEVPPKey *) key
                                               data:(NSData *) dataToSign
                                   signedAttributes:(NSDictionary *) signedAttributes;
-+ (RadPKCS7Message *) degenerateWrapperForCertificate:(RadX509Certificate *) certificate;
-+ (RadPKCS7Message *) encryptedMessageWithCertificates:(NSArray *) certificates
++ (NuPKCS7Message *) degenerateWrapperForCertificate:(NuX509Certificate *) certificate;
++ (NuPKCS7Message *) encryptedMessageWithCertificates:(NSArray *) certificates
                                                   data:(NSData *) dataToEncrypt;
 - (id) initWithData:(NSData *) data;
 - (id) initWithPKCS7:(PKCS7 *) pkcs7;
 - (NSData *) dataRepresentation;
 - (NSString *) textRepresentation;
-- (NSData *) decryptWithKey:(RadEVPPKey *) key
-                certificate:(RadX509Certificate *) certificate;
-- (RadX509Certificate *) signerCertificate;
+- (NSData *) decryptWithKey:(NuEVPPKey *) key
+                certificate:(NuX509Certificate *) certificate;
+- (NuX509Certificate *) signerCertificate;
 - (NSDictionary *) attributes;
-- (NSData *) verifyWithCertificate:(RadX509Certificate *) certificate;
+- (NSData *) verifyWithCertificate:(NuX509Certificate *) certificate;
 @end
 
-@interface RadCertificateAuthority : NSObject
+@interface NuCertificateAuthority : NSObject
 
-- (RadX509Certificate *) generateCertificateForRequest:(NSData *) requestData
-                                     withCACertificate:(RadX509Certificate *) caCertificate
-                                            privateKey:(RadEVPPKey *) caPrivateKey;
+- (NuX509Certificate *) generateCertificateForRequest:(NSData *) requestData
+                                     withCACertificate:(NuX509Certificate *) caCertificate
+                                            privateKey:(NuEVPPKey *) caPrivateKey;
 @end
 
+#endif
 #endif

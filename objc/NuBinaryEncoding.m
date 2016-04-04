@@ -1,5 +1,5 @@
 /*!
- @file RadBinaryEncoding.m
+ @file NuBinaryEncoding.m
  @copyright Copyright (c) 2013 Radtastical, Inc.
  
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +15,9 @@
  limitations under the License.
  */
 
-#import "RadBinaryEncoding.h"
+#import "NuBinaryEncoding.h"
 
-@implementation NSData (RadBinaryEncoding)
+@implementation NSData (NuBinaryEncoding)
 
 static const char *const hexEncodingTable = "0123456789abcdef";
 

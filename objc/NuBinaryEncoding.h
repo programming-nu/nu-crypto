@@ -1,5 +1,5 @@
 /*!
- @file RadBinaryEncoding.h
+ @file NuBinaryEncoding.h
  @copyright Copyright (c) 2013 Radtastical, Inc.
  
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSData (RadBinaryEncoding)
+@interface NSData (NuBinaryEncoding)
 - (NSString *) hexEncodedString;
 + (id) dataWithHexEncodedString:(NSString *) string;
 - (NSString *) base64EncodedString;

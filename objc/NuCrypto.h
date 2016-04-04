@@ -1,5 +1,5 @@
 /*!
- @file RadCrypto.h
+ @file NuCrypto.h
  @copyright Copyright (c) 2013 Radtastical, Inc.
  
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSData (RadCrypto)
+@interface NSData (NuCrypto)
 - (NSData *) md5Data;
 - (NSData *) sha1Data;
 - (NSData *) sha224Data;
