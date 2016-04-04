@@ -7,20 +7,20 @@
 (case SYSTEM
       ("Darwin"
                (set @arch (list "x86_64"))
-               (set @cflags "-g -Wno-deprecated-declarations -std=gnu99 -DDARWIN -DRadCrypto_OpenSSL")
+               (set @cflags "-g -Wno-deprecated-declarations -std=gnu99 -DDARWIN -DNuCrypto_OpenSSL")
                (set @ldflags "-framework Foundation -framework Nu -lcrypto -lssl"))
       ("Linux"
               (set @arch (list "x86_64"))
               (set gnustep_flags ((NSString stringWithShellCommand:"gnustep-config --objc-flags") chomp))
               (set gnustep_libs ((NSString stringWithShellCommand:"gnustep-config --base-libs") chomp))
-              (set @cflags "-g -fobjc-nonfragile-abi -fobjc-arc -DLINUX -I/usr/local/include #{gnustep_flags} -DRadCrypto_OpenSSL")
+              (set @cflags "-g -fobjc-nonfragile-abi -fobjc-arc -DLINUX -I/usr/local/include #{gnustep_flags} -DNuCrypto_OpenSSL")
               (set @ldflags "#{gnustep_libs} -lNu -lcrypto -lssl -luuid"))
       (else nil))
 
 
 ;; framework description
-(set @framework "RadCrypto")
-(set @framework_identifier "com.radtastical.radcrypto")
+(set @framework "NuCrypto")
+(set @framework_identifier "nu.programming.crypto")
 (set @framework_creator_code "????")
 
 (compilation-tasks)
